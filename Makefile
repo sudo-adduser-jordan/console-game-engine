@@ -12,13 +12,16 @@ CCFLAGS = -g -Wall -Wextra -lX11 -lGL -lpthread -lpng -lstdc++fs
 # -lX11 -lGL -lpthread -lpng -lstdc++fs required for olc
 
 default: all
-all: ConsoleGraphicsEngine ConsoleGraphicsEngine2
+all: ConsoleGraphicsEngine ConsoleGraphicsEngine2 ConsoleGraphicsEngine3
 ConsoleGraphicsEngine: ConsoleGraphicsEngine.cpp
 	$(CC) ConsoleGraphicsEngine.cpp -o bin/ConsoleGraphicsEngine.exe $(CCFLAGS) $(VERSION)
 	@echo "Build complete"
 ConsoleGraphicsEngine2: ConsoleGraphicsEngine2.cpp
 	$(CC) ConsoleGraphicsEngine2.cpp -o bin/ConsoleGraphicsEngine2.exe $(CCFLAGS) $(VERSION)
 	@echo "Build complete"
+ConsoleGraphicsEngine3: ConsoleGraphicsEngine3.cpp
+	$(CC) ConsoleGraphicsEngine3.cpp -o bin/ConsoleGraphicsEngine3.exe $(CCFLAGS) $(VERSION)
+	@echo "Build complete"
 clean:
-	$(RM) *.dSYM *.out ConsoleGraphicsEngine ConsoleGraphicsEngine2
+	$(RM) *.dSYM *.out ConsoleGraphicsEngine ConsoleGraphicsEngine2 ConsoleGraphicsEngine3
 	@echo "Clean complete"
