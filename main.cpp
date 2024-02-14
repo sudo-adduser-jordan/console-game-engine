@@ -11,7 +11,6 @@ public:
         sAppName = "Example";
     }
 
-public:
     bool OnUserCreate() override
     {
         // Called once at the start, so create things here

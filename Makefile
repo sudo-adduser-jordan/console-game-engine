@@ -4,7 +4,7 @@ CC      = g++
 RM      = rm -rf
 VERSION = -std=c++17
 EXECUTABLE = -o ConsoleGameEngine.exe
-CCFLAGS = -lX11 -lGL -lpthread -lpng -lstdc++fs 
+CCFLAGS = -g -Wall -Wextra -lX11 -lGL -lpthread -lpng -lstdc++fs 
 # compiler flags:
 #  -g      adds debugging information to the executable file
 #  -Wall   turns on most, but not all, compiler warnings
