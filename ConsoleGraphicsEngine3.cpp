@@ -1,6 +1,9 @@
 #define OLC_PGE_APPLICATION
 #include "olcPixelGameEngine.h"
 // #include <vector>
+#include <fstream>
+#include <strstream>
+#include <algorithm>
 using namespace std;
 
 struct Vec3d
@@ -13,6 +16,7 @@ struct Vec3d
 struct Triangle
 {
     Vec3d points[3];
+    olc::Pixel col;
 };
 
 struct Mesh
@@ -51,6 +55,13 @@ private:
             vectTwo.y /= w;
             vectTwo.z /= w;
         }
+    }
+
+    // Input parameter lum must be between 0 and 1 - i.e. [0, 1]
+    olc::Pixel GetColour(float lum)
+    {
+        int nValue = (int)(std::max(lum, 0.20f) * 255.0f);
+        return olc::Pixel(nValue, nValue, nValue);
     }
 
 public:
@@ -180,11 +191,26 @@ public:
 
             if (dotProduct < 0.0f)
             {
+                // ILLUMINATION
+                Vec3d lightDirection = {0.0f, 0.0f, -1.0f};
+
+                // NORMALIZE LIGHT VECTOR
+                float length = sqrtf(lightDirection.x * lightDirection.x + lightDirection.y * lightDirection.y + lightDirection.z * lightDirection.z); // PYHANGOREOUS THEOREM
+                lightDirection.x /= length;
+                lightDirection.y /= length;
+                lightDirection.z /= length;
+
+                // How similar is normal to light direction
+                float dp = normal.x * lightDirection.x + normal.y * lightDirection.y + normal.z * lightDirection.z;
+
+                // Choose console colours as required
+                triangleTranslated.col = GetColour(dp);
 
                 // Project triangles from 3D --> 2D
                 MultiplyMatrixVector(triangleTranslated.points[0], triangleProjected.points[0], projectionMatrix);
                 MultiplyMatrixVector(triangleTranslated.points[1], triangleProjected.points[1], projectionMatrix);
                 MultiplyMatrixVector(triangleTranslated.points[2], triangleProjected.points[2], projectionMatrix);
+                triangleProjected.col = triangleTranslated.col;
 
                 // Scale into view
                 triangleProjected.points[0].x += 1.0f;
@@ -201,10 +227,15 @@ public:
                 triangleProjected.points[2].y *= 0.5f * (float)ScreenHeight();
 
                 // Rasterize triangle
-                DrawTriangle(triangleProjected.points[0].x, triangleProjected.points[0].y,
+                FillTriangle(triangleProjected.points[0].x, triangleProjected.points[0].y,
                              triangleProjected.points[1].x, triangleProjected.points[1].y,
                              triangleProjected.points[2].x, triangleProjected.points[2].y,
-                             olc::WHITE);
+                             triangleProjected.col);
+
+                // DrawTriangle(triangleProjected.points[0].x, triangleProjected.points[0].y,
+                //  triangleProjected.points[1].x, triangleProjected.points[1].y,
+                //  triangleProjected.points[2].x, triangleProjected.points[2].y,
+                //  olc::WHITE);
             }
         }
         return true;
