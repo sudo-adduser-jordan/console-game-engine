@@ -40,18 +40,18 @@ struct Mesh
             strstream s;
             s << line;
 
-            char junk;
+            char dataType;
             if (line[0] == 'v')
             {
                 Vec3d v;
-                s >> junk >> v.x >> v.y >> v.z;
-                vertices.push_back(v);
+                s >> dataType >> v.x >> v.y >> v.z;
+                vertices.push_back(v); // POOL OF VERTICES
             }
 
             if (line[0] == 'f')
             {
                 int f[3];
-                s >> junk >> f[0] >> f[1] >> f[2];
+                s >> dataType >> f[0] >> f[1] >> f[2]; // CREATE AND PUSH BACK TRIANGLE
                 triangles.push_back({vertices[f[0] - 1], vertices[f[1] - 1], vertices[f[2] - 1]});
             }
         }
@@ -103,29 +103,8 @@ private:
 public:
     bool OnUserCreate() override
     {
-        // // Called once at the start, create things here
-        // meshCube.triangles = {
-        //     // SOUTH
-        //     {0.0f, 0.0f, 0.0f, /**/ 0.0f, 1.0f, 0.0f, /**/ 1.0f, 1.0f, 0.0f},
-        //     {0.0f, 0.0f, 0.0f, /**/ 1.0f, 1.0f, 0.0f, /**/ 1.0f, 0.0f, 0.0f},
-        //     // EAST
-        //     {1.0f, 0.0f, 0.0f, /**/ 1.0f, 1.0f, 0.0f, /**/ 1.0f, 1.0f, 1.0f},
-        //     {1.0f, 0.0f, 0.0f, /**/ 1.0f, 1.0f, 1.0f, /**/ 1.0f, 0.0f, 1.0f},
-        //     // NORTH
-        //     {1.0f, 0.0f, 1.0f, /**/ 1.0f, 1.0f, 1.0f, /**/ 0.0f, 1.0f, 1.0f},
-        //     {1.0f, 0.0f, 1.0f, /**/ 0.0f, 1.0f, 1.0f, /**/ 0.0f, 0.0f, 1.0f},
-        //     // WEST
-        //     {0.0f, 0.0f, 1.0f, /**/ 0.0f, 1.0f, 1.0f, /**/ 0.0f, 1.0f, 0.0f},
-        //     {0.0f, 0.0f, 1.0f, /**/ 0.0f, 1.0f, 0.0f, /**/ 0.0f, 0.0f, 0.0f},
-        //     // TOP
-        //     {0.0f, 1.0f, 0.0f, /**/ 0.0f, 1.0f, 1.0f, /**/ 1.0f, 1.0f, 1.0f},
-        //     {0.0f, 1.0f, 0.0f, /**/ 1.0f, 1.0f, 1.0f, /**/ 1.0f, 1.0f, 0.0f},
-        //     // BOTTOM
-        //     {1.0f, 0.0f, 1.0f, /**/ 0.0f, 0.0f, 1.0f, /**/ 0.0f, 0.0f, 0.0f},
-        //     {1.0f, 0.0f, 1.0f, /**/ 0.0f, 0.0f, 0.0f, /**/ 1.0f, 0.0f, 0.0f},
-
-        // };
-        meshCube.LoadFromObjectFile("assets/cessna.obj");
+        // Called once at the start, create things here
+        meshCube.LoadFromObjectFile("assets/spaceship.obj"); // TEST FOR ERRORS
 
         // PROJECTION MATRIX
         float fNear = 0.1f;
@@ -170,6 +149,9 @@ public:
         matrixRotateX.matrix[2][2] = cosf(fTheta * 0.5f);
         matrixRotateX.matrix[3][3] = 1;
 
+        // STORE TRIANGLES FOR SORTING
+        vector<Triangle> trianglesToRaster;
+
         // DRAW TRIANGLES
         for (auto triangle : meshCube.triangles)
         {
@@ -190,9 +172,9 @@ public:
 
             // Offset into the screen
             triangleTranslated = triangleRotateZX;
-            triangleTranslated.points[0].z = triangleRotateZX.points[0].z + 3.0f;
-            triangleTranslated.points[1].z = triangleRotateZX.points[1].z + 3.0f;
-            triangleTranslated.points[2].z = triangleRotateZX.points[2].z + 3.0f;
+            triangleTranslated.points[0].z = triangleRotateZX.points[0].z + 10.0f;
+            triangleTranslated.points[1].z = triangleRotateZX.points[1].z + 10.0f;
+            triangleTranslated.points[2].z = triangleRotateZX.points[2].z + 10.0f;
 
             // USE CROSS-PRODUCT TO GET SURFACE NORMAL LINE
             Vec3d normal;
@@ -263,18 +245,34 @@ public:
                 triangleProjected.points[2].x *= 0.5f * (float)ScreenWidth();
                 triangleProjected.points[2].y *= 0.5f * (float)ScreenHeight();
 
-                // Rasterize triangle
-                FillTriangle(triangleProjected.points[0].x, triangleProjected.points[0].y,
-                             triangleProjected.points[1].x, triangleProjected.points[1].y,
-                             triangleProjected.points[2].x, triangleProjected.points[2].y,
-                             triangleProjected.col);
-
-                DrawTriangle(triangleProjected.points[0].x, triangleProjected.points[0].y,
-                             triangleProjected.points[1].x, triangleProjected.points[1].y,
-                             triangleProjected.points[2].x, triangleProjected.points[2].y,
-                             olc::BLACK);
+                // STORE TRIANGLES FOR SORTING
+                trianglesToRaster.push_back(triangleProjected);
             }
         }
+
+        // SORT TRIANGLES FOR PAINTERS ALGO
+        sort(trianglesToRaster.begin(), trianglesToRaster.end(), [](Triangle &t1, Triangle &t2)
+             {
+            float z1 = (t1.points[0].z + t1.points[1].z + t1.points[2].z) / 3.0f;
+			float z2 = (t2.points[0].z + t2.points[1].z + t2.points[2].z) / 3.0f;
+			return z1 > z2; });
+
+        // DRAW TRIANGLES
+        for (auto &triangleProjected : trianglesToRaster)
+        {
+
+            // Rasterize triangle
+            FillTriangle(triangleProjected.points[0].x, triangleProjected.points[0].y,
+                         triangleProjected.points[1].x, triangleProjected.points[1].y,
+                         triangleProjected.points[2].x, triangleProjected.points[2].y,
+                         triangleProjected.col);
+
+            // DrawTriangle(triangleProjected.points[0].x, triangleProjected.points[0].y,
+            //              triangleProjected.points[1].x, triangleProjected.points[1].y,
+            //              triangleProjected.points[2].x, triangleProjected.points[2].y,
+            //              olc::BLACK);
+        }
+
         return true;
     }
 };
