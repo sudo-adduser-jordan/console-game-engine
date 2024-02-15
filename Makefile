@@ -11,8 +11,9 @@ CCFLAGS = -g -Wall -Wextra -lX11 -lGL -lpthread -lpng -lstdc++fs
 #  -Wextra turns on extra compiler warnings
 # -lX11 -lGL -lpthread -lpng -lstdc++fs required for olc
 
-default: all
-all: ConsoleGraphicsEngine ConsoleGraphicsEngine2 ConsoleGraphicsEngine3
+# default: all
+default: ConsoleGraphicsEngine4
+all: ConsoleGraphicsEngine ConsoleGraphicsEngine2 ConsoleGraphicsEngine3 ConsoleGraphicsEngine4
 ConsoleGraphicsEngine: ConsoleGraphicsEngine.cpp
 	$(CC) ConsoleGraphicsEngine.cpp -o bin/ConsoleGraphicsEngine.exe $(CCFLAGS) $(VERSION)
 	@echo "Build complete"
@@ -22,6 +23,9 @@ ConsoleGraphicsEngine2: ConsoleGraphicsEngine2.cpp
 ConsoleGraphicsEngine3: ConsoleGraphicsEngine3.cpp
 	$(CC) ConsoleGraphicsEngine3.cpp -o bin/ConsoleGraphicsEngine3.exe $(CCFLAGS) $(VERSION)
 	@echo "Build complete"
+ConsoleGraphicsEngine4: ConsoleGraphicsEngine4.cpp
+	$(CC) ConsoleGraphicsEngine4.cpp -o bin/ConsoleGraphicsEngine4.exe $(CCFLAGS) $(VERSION)
+	@echo "Build complete"
 clean:
-	$(RM) *.dSYM *.out ConsoleGraphicsEngine ConsoleGraphicsEngine2 ConsoleGraphicsEngine3
+	$(RM) *.dSYM *.out ConsoleGraphicsEngine ConsoleGraphicsEngine2 ConsoleGraphicsEngine3 ConsoleGraphicsEngine4
 	@echo "Clean complete"
