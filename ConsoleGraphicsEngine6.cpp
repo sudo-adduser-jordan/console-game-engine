@@ -303,8 +303,8 @@ private:
         // Create two temporary storage arrays to classify points either side of plane
         // If distance sign is positive, point lies on "inside" of plane
         Vec3d *inside_points[3];
-        int nInsidePointCount = 0;
         Vec3d *outside_points[3];
+        int nInsidePointCount = 0;
         int nOutsidePointCount = 0;
 
         // Get signed distance of each point in triangle to plane
@@ -345,7 +345,6 @@ private:
         {
             // All points lie on the outside of plane, so clip whole triangle
             // It ceases to exist
-
             return 0; // No returned triangles are valid
         }
 
@@ -354,7 +353,6 @@ private:
             // All points lie on the inside of plane, so do nothing
             // and allow the triangle to simply pass through
             out_tri1 = in_tri;
-
             return 1; // Just the one returned original triangle is valid
         }
 
@@ -364,8 +362,8 @@ private:
             // the plane, the triangle simply becomes a smaller triangle
 
             // Copy appearance info to new triangle
-            out_tri1.col = in_tri.col;
-            // out_tri1.sym = in_tri.sym;
+            // out_tri1.col = in_tri.col;
+            out_tri1.col = olc::Pixel(0, 0, 255);
 
             // The inside point is valid, so keep that...
             out_tri1.points[0] = *inside_points[0];
@@ -385,11 +383,10 @@ private:
             // represent a quad with two new triangles
 
             // Copy appearance info to new triangles
-            out_tri1.col = in_tri.col;
-            // out_tri1.sym = in_tri.sym;
-
-            out_tri2.col = in_tri.col;
-            // out_tri2.sym = in_tri.sym;
+            // out_tri1.col = in_tri.col;
+            // out_tri2.col = in_tri.col;
+            out_tri1.col = olc::Pixel(255, 0, 0);
+            out_tri2.col = olc::Pixel(0, 255, 0);
 
             // The first triangle consists of the two inside points and a new
             // point determined by the location where one side of the triangle
@@ -420,8 +417,10 @@ public:
     bool OnUserCreate() override
     {
         // Called once at the start, create things here
-        // meshCube.LoadFromObjectFile("assets/spaceship.obj");  // TEST FOR ERRORS
-        meshCube.LoadFromObjectFile("assets/utahteapot.obj"); // TEST FOR ERRORS
+        // meshCube.LoadFromObjectFile("assets/spaceship.obj");
+        // meshCube.LoadFromObjectFile("assets/utahteapot.obj");
+        // meshCube.LoadFromObjectFile("assets/axis.obj");
+        meshCube.LoadFromObjectFile("assets/mountains.obj");
 
         // PROJECTION MATRIX
         float fNear = 0.1f;
@@ -435,15 +434,41 @@ public:
 
     bool OnUserUpdate(float fElapsedTime) override
     {
-        Clear(olc::BLACK);
+        if (GetKey(olc::Key::UP).bHeld)
+            vCamera.y += 8.0f * fElapsedTime; // Travel Upwards
+
+        if (GetKey(olc::Key::DOWN).bHeld)
+            vCamera.y -= 8.0f * fElapsedTime; // Travel Downwards
+
+        // Dont use these two in FPS mode, it is confusing
+        // if (GetKey(olc::Key::RIGHT).bHeld)
+        //     vCamera.x -= 8.0f * fElapsedTime; // Travel Along X-Axis
+
+        // if (GetKey(olc::Key::LEFT).bHeld)
+        //     vCamera.x += 8.0f * fElapsedTime; // Travel Along X-Axis
+        //                                       ///////
+
+        Vec3d vForward = Vector_Mul(vLookDirection, 8.0f * fElapsedTime);
+        // Standard FPS Control scheme, but turn instead of strafe
+        if (GetKey(olc::Key::E).bHeld)
+            vCamera = Vector_Add(vCamera, vForward);
+
+        if (GetKey(olc::Key::D).bHeld)
+            vCamera = Vector_Sub(vCamera, vForward);
+
+        if (GetKey(olc::Key::S).bHeld)
+            fYaw -= 2.0f * fElapsedTime;
+
+        if (GetKey(olc::Key::F).bHeld)
+            fYaw += 2.0f * fElapsedTime;
 
         // SET UP ROTATION MATRICES
-        fTheta += 1.0f * fElapsedTime;
+        // fTheta += 1.0f * fElapsedTime;
         Matrix matrixRotateZ = Matrix_MakeRotationZ(fTheta * 0.5f);
         Matrix matrixRotateX = Matrix_MakeRotationX(fTheta);
 
         // TRANSLATE MATRIX
-        Matrix matrixTranslated = Matrix_MakeTranslation(0.0f, 0.0f, 16.0f);
+        Matrix matrixTranslated = Matrix_MakeTranslation(0.0f, 0.0f, 5.0f);
 
         // WORLD MATRIX
         Matrix matrixWorld;
@@ -451,15 +476,27 @@ public:
         matrixWorld = Matrix_MultiplyMatrix(matrixRotateZ, matrixRotateX);  // ROTATE AROUND ORGIN
         matrixWorld = Matrix_MultiplyMatrix(matrixWorld, matrixTranslated); // TRANSLATE OBJECT TO A DIFFERENT LOCATION
 
+        Vec3d vUp = {0, 1, 0};
+        Vec3d vTarget = {0, 0, 1};
+        Matrix matrixCameraRotation = Matrix_MakeRotationY(fYaw);
+        vLookDirection = Matrix_MultiplyVector(matrixCameraRotation, vTarget);
+        vTarget = Vector_Add(vCamera, vLookDirection);
+
+        Matrix matrixCamera = Matrix_PointAt(vCamera, vTarget, vUp);
+
+        // MAKE VEW MATRIX FROM CAMERA
+        Matrix matrixView = Matrix_QuickInverse(matrixCamera);
+
         // STORE TRIANGLES FOR SORTING
-        vector<Triangle> trianglesToRaster;
+        vector<Triangle>
+            trianglesToRaster;
 
         // DRAW TRIANGLES
         for (auto triangle : meshCube.triangles)
         {
             Triangle triangleProjected;
             Triangle triangleTransformed;
-            // Triangle triangleViewed;
+            Triangle triangleViewed;
 
             // WORLD MATRIX TRANSFORM
             triangleTransformed.points[0] = Matrix_MultiplyVector(matrixWorld, triangle.points[0]);
@@ -481,7 +518,8 @@ public:
             if (Vector_DotProduct(normal, vCameraRay) < 0.0f)
             {
                 // ILLUMINATION
-                Vec3d lightDirection = {0.0f, 0.0f, -1.0f};
+                Vec3d lightDirection = {0.0f, 1.0f, -1.0f};
+                // Vec3d lightDirection = {0.0f, 0.0f, -1.0f};
                 lightDirection = Vector_Normalise(lightDirection);
 
                 // How "aligned" are light direction and triangle surface normal?
@@ -491,55 +529,125 @@ public:
                 triangleTransformed.col = GetColour(dp);
 
                 // Convert World Space --> View Space
-                triangleProjected.points[0] = Matrix_MultiplyVector(matrixProjection, triangleTransformed.points[0]);
-                triangleProjected.points[1] = Matrix_MultiplyVector(matrixProjection, triangleTransformed.points[1]);
-                triangleProjected.points[2] = Matrix_MultiplyVector(matrixProjection, triangleTransformed.points[2]);
-                triangleProjected.col = triangleTransformed.col;
+                triangleViewed.points[0] = Matrix_MultiplyVector(matrixView, triangleTransformed.points[0]);
+                triangleViewed.points[1] = Matrix_MultiplyVector(matrixView, triangleTransformed.points[1]);
+                triangleViewed.points[2] = Matrix_MultiplyVector(matrixView, triangleTransformed.points[2]);
+                triangleViewed.col = triangleTransformed.col;
 
-                // Scale into view
-                triangleProjected.points[0] = Vector_Div(triangleProjected.points[0], triangleProjected.points[0].w);
-                triangleProjected.points[1] = Vector_Div(triangleProjected.points[1], triangleProjected.points[1].w);
-                triangleProjected.points[2] = Vector_Div(triangleProjected.points[2], triangleProjected.points[2].w);
+                // Clip Viewed Triangle against near plane, this could form two additional
+                // additional triangles.
+                int nClippedTriangles = 0;
+                Triangle clipped[2];
+                nClippedTriangles = Triangle_ClipAgainstPlane({0.0f, 0.0f, 0.1f}, {0.0f, 0.0f, 1.0f}, triangleViewed, clipped[0], clipped[1]);
 
-                // Offset verts into visible normalised space
-                Vec3d vOffsetView = {1, 1, 0};
-                triangleProjected.points[0] = Vector_Add(triangleProjected.points[0], vOffsetView);
-                triangleProjected.points[1] = Vector_Add(triangleProjected.points[1], vOffsetView);
-                triangleProjected.points[2] = Vector_Add(triangleProjected.points[2], vOffsetView);
+                for (int index = 0; index < nClippedTriangles; index++)
+                {
 
-                triangleProjected.points[0].x *= 0.5f * (float)ScreenWidth();
-                triangleProjected.points[0].y *= 0.5f * (float)ScreenHeight();
-                triangleProjected.points[1].x *= 0.5f * (float)ScreenWidth();
-                triangleProjected.points[1].y *= 0.5f * (float)ScreenHeight();
-                triangleProjected.points[2].x *= 0.5f * (float)ScreenWidth();
-                triangleProjected.points[2].y *= 0.5f * (float)ScreenHeight();
+                    // PROJECT TRIANGLES FROM 3D ---> 2D
+                    triangleProjected.points[0] = Matrix_MultiplyVector(matrixProjection, clipped[index].points[0]);
+                    triangleProjected.points[1] = Matrix_MultiplyVector(matrixProjection, clipped[index].points[1]);
+                    triangleProjected.points[2] = Matrix_MultiplyVector(matrixProjection, clipped[index].points[2]);
+                    triangleProjected.col = clipped[index].col;
 
-                // STORE TRIANGLES FOR SORTING
-                trianglesToRaster.push_back(triangleProjected);
+                    // Scale into view
+                    triangleProjected.points[0] = Vector_Div(triangleProjected.points[0], triangleProjected.points[0].w);
+                    triangleProjected.points[1] = Vector_Div(triangleProjected.points[1], triangleProjected.points[1].w);
+                    triangleProjected.points[2] = Vector_Div(triangleProjected.points[2], triangleProjected.points[2].w);
+
+                    // X/Y are inverted so put them back
+                    triangleProjected.points[0].x *= -1.0f;
+                    triangleProjected.points[1].x *= -1.0f;
+                    triangleProjected.points[2].x *= -1.0f;
+                    triangleProjected.points[0].y *= -1.0f;
+                    triangleProjected.points[1].y *= -1.0f;
+                    triangleProjected.points[2].y *= -1.0f;
+
+                    // Offset verts into visible normalised space
+                    Vec3d vOffsetView = {1, 1, 0};
+                    triangleProjected.points[0] = Vector_Add(triangleProjected.points[0], vOffsetView);
+                    triangleProjected.points[1] = Vector_Add(triangleProjected.points[1], vOffsetView);
+                    triangleProjected.points[2] = Vector_Add(triangleProjected.points[2], vOffsetView);
+
+                    triangleProjected.points[0].x *= 0.5f * (float)ScreenWidth();
+                    triangleProjected.points[0].y *= 0.5f * (float)ScreenHeight();
+                    triangleProjected.points[1].x *= 0.5f * (float)ScreenWidth();
+                    triangleProjected.points[1].y *= 0.5f * (float)ScreenHeight();
+                    triangleProjected.points[2].x *= 0.5f * (float)ScreenWidth();
+                    triangleProjected.points[2].y *= 0.5f * (float)ScreenHeight();
+
+                    // STORE TRIANGLES FOR SORTING
+                    trianglesToRaster.push_back(triangleProjected);
+                }
             }
         }
 
-        // SORT TRIANGLES FOR PAINTERS ALGO
+        Clear(olc::BLACK);
+        // // SORT TRIANGLES FOR PAINTERS ALGO
         sort(trianglesToRaster.begin(), trianglesToRaster.end(), [](Triangle &t1, Triangle &t2)
              {
             float z1 = (t1.points[0].z + t1.points[1].z + t1.points[2].z) / 3.0f;
-			float z2 = (t2.points[0].z + t2.points[1].z + t2.points[2].z) / 3.0f;
-			return z1 > z2; });
+        	float z2 = (t2.points[0].z + t2.points[1].z + t2.points[2].z) / 3.0f;
+        	return z1 > z2; });
 
-        // DRAW TRIANGLES
-        for (auto &triangleProjected : trianglesToRaster)
+        // Loop through all transformed, viewed, projected, and sorted triangles
+        for (auto &triangleToRaster : trianglesToRaster)
         {
+            // Clip triangles against all four screen edges, this could yield
+            // a bunch of triangles, so create a queue that we traverse to
+            //  ensure we only test new triangles generated against planes
+            Triangle clipped[2];
+            std::list<Triangle> listTriangles;
 
-            // Rasterize triangle
-            FillTriangle(triangleProjected.points[0].x, triangleProjected.points[0].y,
-                         triangleProjected.points[1].x, triangleProjected.points[1].y,
-                         triangleProjected.points[2].x, triangleProjected.points[2].y,
-                         triangleProjected.col);
+            // Add initial triangle
+            listTriangles.push_back(triangleToRaster);
+            int nNewTriangles = 1;
 
-            // DrawTriangle(triangleProjected.points[0].x, triangleProjected.points[0].y,
-            //              triangleProjected.points[1].x, triangleProjected.points[1].y,
-            //              triangleProjected.points[2].x, triangleProjected.points[2].y,
-            //              olc::BLACK);
+            for (int p = 0; p < 4; p++)
+            {
+                int nTrisToAdd = 0;
+                while (nNewTriangles > 0)
+                {
+                    // Take triangle from front of queue
+                    Triangle test = listTriangles.front();
+                    listTriangles.pop_front();
+                    nNewTriangles--;
+
+                    // Clip it against a plane. We only need to test each
+                    // subsequent plane, against subsequent new triangles
+                    // as all triangles after a plane clip are guaranteed
+                    // to lie on the inside of the plane. I like how this
+                    // comment is almost completely and utterly justified
+                    switch (p)
+                    {
+                    case 0:
+                        nTrisToAdd = Triangle_ClipAgainstPlane({0.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}, test, clipped[0], clipped[1]);
+                        break;
+                    case 1:
+                        nTrisToAdd = Triangle_ClipAgainstPlane({0.0f, (float)ScreenHeight() - 1, 0.0f}, {0.0f, -1.0f, 0.0f}, test, clipped[0], clipped[1]);
+                        break;
+                    case 2:
+                        nTrisToAdd = Triangle_ClipAgainstPlane({0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f}, test, clipped[0], clipped[1]);
+                        break;
+                    case 3:
+                        nTrisToAdd = Triangle_ClipAgainstPlane({(float)ScreenWidth() - 1, 0.0f, 0.0f}, {-1.0f, 0.0f, 0.0f}, test, clipped[0], clipped[1]);
+                        break;
+                    }
+
+                    // Clipping may yield a variable number of triangles, so
+                    // add these new ones to the back of the queue for subsequent
+                    // clipping against next planes
+                    for (int w = 0; w < nTrisToAdd; w++)
+                        listTriangles.push_back(clipped[w]);
+                }
+                nNewTriangles = listTriangles.size();
+            }
+
+            // Draw the transformed, viewed, clipped, projected, sorted, clipped triangles
+            for (auto &t : listTriangles)
+            {
+                FillTriangle(t.points[0].x, t.points[0].y, t.points[1].x, t.points[1].y, t.points[2].x, t.points[2].y, t.col);
+                DrawTriangle(t.points[0].x, t.points[0].y, t.points[1].x, t.points[1].y, t.points[2].x, t.points[2].y, olc::BLACK);
+            }
         }
 
         return true;
