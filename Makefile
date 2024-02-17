@@ -3,7 +3,14 @@
 CC      = g++
 RM      = rm -rf
 VERSION = -std=c++17
-CCFLAGS = -g -Wall -Wextra -lX11 -lGL -lpthread -lpng -lstdc++fs 
+
+
+# WINDOWS
+CCFLAGS = -g -Wall -Wextra  -luser32 -lgdi32 -lopengl32 -lgdiplus -lShlwapi -ldwmapi -lstdc++fs -static -std=c++17 
+
+# LINUX
+# CCFLAGS = -g -Wall -Wextra -lX11 -lGL -lpthread -lpng -lstdc++fs 
+
 # EXECUTABLE = -o ConsoleGraphicsEngine.exe
 # compiler flags:
 #  -g      adds debugging information to the executable file
