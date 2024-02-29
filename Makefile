@@ -6,10 +6,10 @@ VERSION = -std=c++17
 
 
 # WINDOWS
-CCFLAGS = -g -Wall -Wextra  -luser32 -lgdi32 -lopengl32 -lgdiplus -lShlwapi -ldwmapi -lstdc++fs -static -std=c++17 
+# CCFLAGS = -g -Wall -Wextra  -luser32 -lgdi32 -lopengl32 -lgdiplus -lShlwapi -ldwmapi -lstdc++fs -static -std=c++17 
 
 # LINUX
-# CCFLAGS = -g -Wall -Wextra -lX11 -lGL -lpthread -lpng -lstdc++fs 
+CCFLAGS = -g -Wall -Wextra -lX11 -lGL -lpthread -lpng -lstdc++fs 
 
 # EXECUTABLE = -o ConsoleGraphicsEngine.exe
 # compiler flags:
@@ -19,7 +19,7 @@ CCFLAGS = -g -Wall -Wextra  -luser32 -lgdi32 -lopengl32 -lgdiplus -lShlwapi -ldw
 # -lX11 -lGL -lpthread -lpng -lstdc++fs required for olc
 
 # default: all
-default: ConsoleGraphicsEngine6
+default: ConsoleGraphicsEngine7
 
 all: ConsoleGraphicsEngine
 all: ConsoleGraphicsEngine2 
@@ -27,6 +27,8 @@ all: ConsoleGraphicsEngine3
 all: ConsoleGraphicsEngine4 
 all: ConsoleGraphicsEngine5
 all: ConsoleGraphicsEngine6
+all: ConsoleGraphicsEngine7
+
 
 ConsoleGraphicsEngine: ConsoleGraphicsEngine.cpp
 	$(CC) ConsoleGraphicsEngine.cpp -o bin/ConsoleGraphicsEngine.exe $(CCFLAGS) $(VERSION)
@@ -46,7 +48,9 @@ ConsoleGraphicsEngine5: ConsoleGraphicsEngine5.cpp
 ConsoleGraphicsEngine6: ConsoleGraphicsEngine6.cpp
 	$(CC) ConsoleGraphicsEngine6.cpp -o bin/ConsoleGraphicsEngine6.exe $(CCFLAGS) $(VERSION)
 	@echo "Build complete"
-
+ConsoleGraphicsEngine7: ConsoleGraphicsEngine7.cpp
+	$(CC) ConsoleGraphicsEngine7.cpp -o bin/ConsoleGraphicsEngine7.exe $(CCFLAGS) $(VERSION)
+	@echo "Build complete"
 clean:
 	$(RM) *.dSYM *.out \
 	ConsoleGraphicsEngine \
@@ -55,4 +59,5 @@ clean:
 	ConsoleGraphicsEngine4 \
 	ConsoleGraphicsEngine5 \
 	ConsoleGraphicsEngine6 \
+	ConsoleGraphicsEngine7 \
 	@echo "Clean complete"
