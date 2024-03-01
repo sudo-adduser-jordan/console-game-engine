@@ -58,6 +58,9 @@ struct Mesh
                 {
                     Vec2d v;
                     s >> dataType >> dataType >> v.u >> v.v;
+                    // A little hack for the spyro texture
+					// v.u = 1.0f - v.u;
+					v.v = 1.0f - v.v;
                     textures.push_back(v);
                 }
                 else
@@ -495,16 +498,10 @@ public:
     bool OnUserCreate() override
     {
         pDepthBuffer = new float[ScreenWidth() * ScreenHeight()];
-
-        // Called once at the start, create things here
         // meshCube.LoadFromObjectFile("assets/spaceship.obj");
         // meshCube.LoadFromObjectFile("assets/utahteapot.obj");
         // meshCube.LoadFromObjectFile("assets/axis.obj");
         // meshCube.LoadFromObjectFile("assets/mountains.obj");
-
-        meshCube.LoadFromObjectFile("assets/mountains.obj");
-
-        // + corresponding texture and comment theta to remove rotation
 
         // meshCube.triangles = {
         //     // SOUTH
@@ -790,9 +787,13 @@ public:
         //         1.0f,
         //     },
         // };
-
+   
         // sprTex1 = new olc::Sprite("assets/Jario.png");
-        // sprTex1 = new olc::Sprite("assets/music.png");
+        // sprTex1 = new olc::Sprite("assets/avatar.png");
+
+        meshCube.LoadFromObjectFile("assets/test/untitled.obj", true);
+        sprTex1 = new olc::Sprite("assets/test/High.png");
+
 
         // PROJECTION MATRIX
         float fNear = 0.1f;
@@ -814,11 +815,11 @@ public:
             vCamera.y -= 8.0f * fElapsedTime; // Travel Downwards
 
         // Dont use these two in FPS mode, it is confusing
-        // if (GetKey(olc::Key::RIGHT).bHeld)
-        //     vCamera.x -= 8.0f * fElapsedTime; // Travel Along X-Axis
+        if (GetKey(olc::Key::RIGHT).bHeld)
+            vCamera.x -= 8.0f * fElapsedTime; // Travel Along X-Axis
 
-        // if (GetKey(olc::Key::LEFT).bHeld)
-        //     vCamera.x += 8.0f * fElapsedTime; // Travel Along X-Axis
+        if (GetKey(olc::Key::LEFT).bHeld)
+            vCamera.x += 8.0f * fElapsedTime; // Travel Along X-Axis
         //                                       ///////
 
         Vec3d vForward = Vector_Mul(vLookDirection, 8.0f * fElapsedTime);
