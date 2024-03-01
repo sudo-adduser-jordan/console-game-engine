@@ -11,13 +11,14 @@ git clone https://github.com/sudo-adduser-jordan/console-graphics-engine
  - Linux
  - Windows
 
+<!--
 ## Table of Contents
 
 - [Install Dependices](#install-dependices)
 - [Compile](#compile)
 - [Run](#run)
 - [Videos](#video)
-
+-->
 
 ## Install Dependcies
 
@@ -25,7 +26,6 @@ Windows
  -MinGW / MSYS2
  -Make
 
- 
 Linux
 ```
 sudo apt update
@@ -47,7 +47,7 @@ make
 
 ## Keyboard Input
 
-```c++
+```
 S = Look Left
 F = Look Right
 E = Forward
@@ -56,8 +56,15 @@ ArrowUp = Up
 ArrowDown = Down
 ```
 
-
 ## Videos 
+
+https://github.com/sudo-adduser-jordan/console-graphics-engine/blob/main/assets/ConsoleGraphicsEngineAxis.mp4
+
+
+
+
+
+
 
 
 
