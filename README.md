@@ -1,5 +1,8 @@
 # Console 3D Graphics Engine
 
+3D graphics rendered with in the console!
+
+
 ```
 git clone https://github.com/sudo-adduser-jordan/console-graphics-engine
 ```
