@@ -4,16 +4,15 @@
 git clone https://github.com/sudo-adduser-jordan/console-graphics-engine
 ```
 
+## Cross platform
+ - Linux
+ - Windows
 
 ## Menu
 -todo
 
 
-## Videos 
 
-## Cross platform
- - Linux
- - Windows
 
 ## Install Dependcies
 
@@ -43,6 +42,7 @@ make
 ```
 
 
+## Videos 
 
 
 
