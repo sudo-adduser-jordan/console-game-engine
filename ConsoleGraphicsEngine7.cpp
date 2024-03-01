@@ -791,9 +791,10 @@ public:
         // sprTex1 = new olc::Sprite("assets/Jario.png");
         // sprTex1 = new olc::Sprite("assets/avatar.png");
 
-        meshCube.LoadFromObjectFile("assets/test/untitled.obj", true);
-        sprTex1 = new olc::Sprite("assets/test/High.png");
-
+        // meshCube.LoadFromObjectFile("assets/test/untitled.obj", true);
+        // sprTex1 = new olc::Sprite("assets/test/High.png");
+        meshCube.LoadFromObjectFile("assets/test2/untitled.obj", true);
+        sprTex1 = new olc::Sprite("assets/test2/textures3.png");
 
         // PROJECTION MATRIX
         float fNear = 0.1f;
@@ -807,22 +808,23 @@ public:
 
     bool OnUserUpdate(float fElapsedTime) override
     {
+        float moveSpeed = 300.0f;
 
         if (GetKey(olc::Key::UP).bHeld)
-            vCamera.y += 8.0f * fElapsedTime; // Travel Upwards
+            vCamera.y += moveSpeed * fElapsedTime; // Travel Upwards
 
         if (GetKey(olc::Key::DOWN).bHeld)
-            vCamera.y -= 8.0f * fElapsedTime; // Travel Downwards
+            vCamera.y -= moveSpeed * fElapsedTime; // Travel Downwards
 
         // Dont use these two in FPS mode, it is confusing
         if (GetKey(olc::Key::RIGHT).bHeld)
-            vCamera.x -= 8.0f * fElapsedTime; // Travel Along X-Axis
+            vCamera.x -= moveSpeed * fElapsedTime; // Travel Along X-Axis
 
         if (GetKey(olc::Key::LEFT).bHeld)
-            vCamera.x += 8.0f * fElapsedTime; // Travel Along X-Axis
+            vCamera.x += moveSpeed * fElapsedTime; // Travel Along X-Axis
         //                                       ///////
 
-        Vec3d vForward = Vector_Mul(vLookDirection, 8.0f * fElapsedTime);
+        Vec3d vForward = Vector_Mul(vLookDirection, moveSpeed * fElapsedTime);
         // Standard FPS Control scheme, but turn instead of strafe
         if (GetKey(olc::Key::E).bHeld)
             vCamera = Vector_Add(vCamera, vForward);
@@ -976,14 +978,15 @@ public:
             }
         }
 
-        // // SORT TRIANGLES FOR PAINTERS ALGO
-        // sort(trianglesToRaster.begin(), trianglesToRaster.end(), [](Triangle &t1, Triangle &t2)
-        //      {
-        //     float z1 = (t1.points[0].z + t1.points[1].z + t1.points[2].z) / 3.0f;
-        // 	float z2 = (t2.points[0].z + t2.points[1].z + t2.points[2].z) / 3.0f;
-        // 	return z1 > z2; });
+        // // SORT TRIANGLES PAINTERS ALGO
+        sort(trianglesToRaster.begin(), trianglesToRaster.end(), [](Triangle &t1, Triangle &t2)
+             {
+            float z1 = (t1.points[0].z + t1.points[1].z + t1.points[2].z) / 3.0f;
+        	float z2 = (t2.points[0].z + t2.points[1].z + t2.points[2].z) / 3.0f;
+        	return z1 > z2; });
 
-        // Clear Screen
+        // Clear Screen  
+        // Clear(olc::WHITE);
         FillRect(0, 0, ScreenWidth(), ScreenHeight(), olc::CYAN);
 
         // Clear Depth Buffer
@@ -1054,7 +1057,7 @@ public:
 
                 // FillTriangle(t.points[0].x, t.points[0].y, t.points[1].x, t.points[1].y, t.points[2].x, t.points[2].y, t.col);
                 // DrawTriangle(t.points[0].x, t.points[0].y, t.points[1].x, t.points[1].y, t.points[2].x, t.points[2].y, olc::BLACK);
-                // DrawTriangle(t.points[0].x, t.points[0].y, t.points[1].x, t.points[1].y, t.points[2].x, t.points[2].y, olc::BLACK);
+                // DrawTriangle(t.points[0].x, t.points[0].y, t.points[1].x, t.points[1].y, t.points[2].x, t.points[2].y, olc::WHITE);
             }
         }
 

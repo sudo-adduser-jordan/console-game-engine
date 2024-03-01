@@ -581,13 +581,15 @@ public:
             }
         }
 
-        Clear(olc::BLACK);
-        // // SORT TRIANGLES FOR PAINTERS ALGO
-        sort(trianglesToRaster.begin(), trianglesToRaster.end(), [](Triangle &t1, Triangle &t2)
-             {
-            float z1 = (t1.points[0].z + t1.points[1].z + t1.points[2].z) / 3.0f;
-        	float z2 = (t2.points[0].z + t2.points[1].z + t2.points[2].z) / 3.0f;
-        	return z1 > z2; });
+        // Clear(olc::BLACK);
+        // SORT TRIANGLES FOR PAINTERS ALGO
+        // CLIPPING DEBUG
+
+        // sort(trianglesToRaster.begin(), trianglesToRaster.end(), [](Triangle &t1, Triangle &t2)
+        //      {
+        //     float z1 = (t1.points[0].z + t1.points[1].z + t1.points[2].z) / 3.0f;
+        // 	float z2 = (t2.points[0].z + t2.points[1].z + t2.points[2].z) / 3.0f;
+        // 	return z1 > z2; });
 
         // Loop through all transformed, viewed, projected, and sorted triangles
         for (auto &triangleToRaster : trianglesToRaster)
