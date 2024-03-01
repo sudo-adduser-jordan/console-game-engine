@@ -1,9 +1,5 @@
 # Console 3D Graphics Engine
 
-
-
-The pixel game engine is used for basic functions such as creating a window and key input.
-
 ```
 git clone https://github.com/sudo-adduser-jordan/console-graphics-engine
 ```
