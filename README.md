@@ -22,10 +22,14 @@ git clone https://github.com/sudo-adduser-jordan/console-graphics-engine
 ## Install Dependcies
 
 Windows 
-```
-```
+ -MinGW / MSYS2
+ -Make
+
+ 
 Linux
 ```
+sudo apt update
+sudo apt install build-essential libglu1-mesa-dev libpng-dev
 ```
 ## Compile
 
@@ -43,7 +47,13 @@ make
 
 ## Keyboard Input
 
-```
+```c++
+S = Look Left
+F = Look Right
+E = Forward
+D = Backward
+ArrowUp = Up
+ArrowDown = Down
 ```
 
 
