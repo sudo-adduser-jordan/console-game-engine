@@ -13,7 +13,7 @@ git clone https://github.com/sudo-adduser-jordan/console-graphics-engine
 
 ## Table of Contents
 
-- [Install](#install)
+- [Install Dependices](#install)
 - [Compile](#compile)
 - [Run](#run)
 - [Videos](#video)
