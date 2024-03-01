@@ -11,10 +11,12 @@ git clone https://github.com/sudo-adduser-jordan/console-graphics-engine
  - Linux
  - Windows
 
-## Menu
--todo
+## Table of Contents
 
-
+- [Install](#install)
+- [Compile](#compile)
+- [Run](#run)
+- [Videos](#video)
 
 
 ## Install Dependcies
