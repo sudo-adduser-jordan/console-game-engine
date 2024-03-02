@@ -498,10 +498,7 @@ public:
     bool OnUserCreate() override
     {
         pDepthBuffer = new float[ScreenWidth() * ScreenHeight()];
-        // meshCube.LoadFromObjectFile("assets/spaceship.obj");
-        // meshCube.LoadFromObjectFile("assets/utahteapot.obj");
-        // meshCube.LoadFromObjectFile("assets/axis.obj");
-        // meshCube.LoadFromObjectFile("assets/mountains.obj");
+
 
         // meshCube.triangles = {
         //     // SOUTH
@@ -791,12 +788,14 @@ public:
         // sprTex1 = new olc::Sprite("assets/Jario.png");
         // sprTex1 = new olc::Sprite("assets/avatar.png");
 
-        // meshCube.LoadFromObjectFile("assets/test/untitled.obj", true);
-        // sprTex1 = new olc::Sprite("assets/test/High.png");
-        meshCube.LoadFromObjectFile("assets/test2/untitled.obj", true);
-        sprTex1 = new olc::Sprite("assets/test2/textures3.png");
+        // meshCube.LoadFromObjectFile("assets/spaceship.obj");
+        // meshCube.LoadFromObjectFile("assets/utahteapot.obj");
+        // meshCube.LoadFromObjectFile("assets/axis.obj");
+        // meshCube.LoadFromObjectFile("assets/mountains.obj");
+        meshCube.LoadFromObjectFile("assets/spyro/forest/untitled.obj", true);
+        sprTex1 = new olc::Sprite("assets/spyro/forest/textures3.png");
 
-        // PROJECTION MATRIX
+        // PROJECTION MATRIX 
         float fNear = 0.1f;
         float fFar = 1000.0f;
         float fFOV = 90.0f;

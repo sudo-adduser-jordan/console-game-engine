@@ -1,9 +1,6 @@
-# g++ -o olcExampleProgram.exe main.cpp -lX11 -lGL -lpthread -lpng -lstdc++fs -std=c++17
-
 CC      = g++
 RM      = rm -rf
 VERSION = -std=c++17
-
 
 # WINDOWS
 # CCFLAGS = -g -Wall -Wextra  -luser32 -lgdi32 -lopengl32 -lgdiplus -lShlwapi -ldwmapi -lstdc++fs -static -std=c++17 
@@ -11,12 +8,12 @@ VERSION = -std=c++17
 # LINUX
 CCFLAGS = -g -Wall -Wextra -lX11 -lGL -lpthread -lpng -lstdc++fs 
 
-# EXECUTABLE = -o ConsoleGraphicsEngine.exe
 # compiler flags:
 #  -g      adds debugging information to the executable file
 #  -Wall   turns on most, but not all, compiler warnings
 #  -Wextra turns on extra compiler warnings
 # -lX11 -lGL -lpthread -lpng -lstdc++fs required for olc
+# EXECUTABLE = -o ConsoleGraphicsEngine.exe
 
 # default: all
 default: ConsoleGraphicsEngine7
