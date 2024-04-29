@@ -63,7 +63,6 @@ ArrowDown = Down
 ## Videos 
 
 
-<video src="https://github.com/sudo-adduser-jordan/console-graphics-engine/assets/108599131/bd782eb2-38ce-42cf-acd6-87ac5be7a2b6" width="300" />
 
 
 
