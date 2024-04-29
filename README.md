@@ -57,6 +57,9 @@ ArrowDown = Down
 ```
 
 ## Videos 
+
+<video src="https://github.com/sudo-adduser-jordan/console-graphics-engine/blob/main/assets/ConsoleGraphicsEngineAxis.mp4" width="300" />
+
 <!--
 [![Watch the video](https://i.stack.imgur.com/Vp2cE.png)](https://github.com/sudo-adduser-jordan/console-graphics-engine/blob/main/assets/ConsoleGraphicsEngineAxis.mp4)
 [![Watch the video](https://i.stack.imgur.com/Vp2cE.png)](https://github.com/sudo-adduser-jordan/console-graphics-engine/blob/main/assets/ConsoleGraphicsEngineAxis.mp4)
