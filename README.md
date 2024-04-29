@@ -41,6 +41,10 @@ make
 
 ## Run
 
+
+
+
+
 ```
 ./bin/ConsoleGameEngine7.exe
 ```
@@ -59,7 +63,7 @@ ArrowDown = Down
 ## Videos 
 
 <video src="https://github.com/sudo-adduser-jordan/console-graphics-engine/blob/main/assets/videos/ConsoleGraphicsEngineAxis.mp4" width="300" />
-
+https://github.com/sudo-adduser-jordan/console-graphics-engine/assets/108599131/bd782eb2-38ce-42cf-acd6-87ac5be7a2b6
 <!--
 [![Watch the video](https://i.stack.imgur.com/Vp2cE.png)](https://github.com/sudo-adduser-jordan/console-graphics-engine/blob/main/assets/ConsoleGraphicsEngineAxis.mp4)
 [![Watch the video](https://i.stack.imgur.com/Vp2cE.png)](https://github.com/sudo-adduser-jordan/console-graphics-engine/blob/main/assets/ConsoleGraphicsEngineAxis.mp4)
