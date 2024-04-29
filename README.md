@@ -41,10 +41,6 @@ make
 
 ## Run
 
-
-
-
-
 ```
 ./bin/ConsoleGameEngine7.exe
 ```
@@ -74,6 +70,8 @@ https://github.com/sudo-adduser-jordan/console-graphics-engine/assets/108599131/
 https://github.com/sudo-adduser-jordan/console-graphics-engine/assets/108599131/44a2b36a-6dda-4cac-a30f-fa9a218924bf
 
 https://github.com/sudo-adduser-jordan/console-graphics-engine/assets/108599131/49f45bad-b504-498f-8a16-c9122c52f5fe
+
+https://github.com/sudo-adduser-jordan/console-graphics-engine/assets/108599131/a57e23c9-8a59-483f-972e-8d1d8d21711c
 
 
 
